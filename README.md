@@ -1,2 +1,2 @@
 # itla
-International Terracement Landscape Association
+International Terraced Landscape Alliance
