@@ -1,0 +1,10 @@
+html,body{height: 100%;width: 100vw;}
+body {padding: 0;margin: 0;}
+
+.animation{-webkit-transition: all .5s ease; -moz-transition: all .5s ease; -ms-transition: all .5s ease; -o-transition: all .5s ease; transition: all .5s ease;}
+.pointer{cursor: pointer;}
+.mainPanelOpened{right:0;}
+.mainPanelClosed{right:-300px;}
+
+#map{position:absolute;top: 0;left:0;bottom:0;width: 100%;z-index:1;}
+#mainPanel{position:absolute; top:50px; width:300px; min-height:50vh; height:auto; max-height: 80vh; background: #fff; overflow:auto; z-index: 2}
