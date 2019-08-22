@@ -50,6 +50,7 @@ $.getJSON(italy,function(data){
 map.on('click',closePanel)
 
 map.on('zoomend',function(){
+  zoom = map.getZoom();
   console.log(zoom);
   switch (true) {
     case (zoom < 5):
