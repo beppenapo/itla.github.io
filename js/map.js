@@ -5,6 +5,9 @@ let highlight = { stroke: false, fill: true, fillColor: 'yellow', fillOpacity: 1
 let continents = './inc/world.geo.json';
 let contStyle = { stroke: true, color:'rgba(0,0,0,.8)', weight:1, fill: true, fillColor: '#fff', fillOpacity: 1}
 let contHighlight = { stroke: true, color:'rgba(210,143,12,1)', weight:1, fill: true, fillColor: 'yellow', fillOpacity: 1}
+let italy = './inc/italy.json';
+let italyStyle = { stroke: true, color:'rgba(0,0,0,.8)', weight:1, fill: true, fillColor: '#fff', fillOpacity: .3}
+let italyHighlight = { stroke: true, color:'rgba(210,143,12,1)', weight:1, fill: true, fillColor: 'yellow', fillOpacity: .3}
 let selected, worldLayer, continentsLayer;
 let thunderF = L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=f1151206891e4ca7b1f6eda1e0852b2e');
 let zoom = 0;
@@ -15,7 +18,6 @@ $.getJSON(world,function(data){
     selected = e.layer
     selected.bringToFront()
     selected.setStyle(highlight)
-    //map.fitBounds(e.layer.getBounds());
     openPanel(e)
     L.DomEvent.stopPropagation(e);
   })
@@ -29,7 +31,17 @@ $.getJSON(continents,function(data){
     selected = e.layer
     selected.bringToFront()
     selected.setStyle(contHighlight)
-    //map.fitBounds(e.layer.getBounds());
+    openPanel(e)
+    L.DomEvent.stopPropagation(e);
+  });
+})
+$.getJSON(italy,function(data){
+  italyLayer = L.geoJson(data, { clickable: true, style: italyStyle})
+  .on('click', function (e) {
+    if (selected) { e.target.resetStyle(selected) }
+    selected = e.layer
+    selected.bringToFront()
+    selected.setStyle(italyHighlight)
     openPanel(e)
     L.DomEvent.stopPropagation(e);
   });
@@ -38,23 +50,25 @@ $.getJSON(continents,function(data){
 map.on('click',closePanel)
 
 map.on('zoomend',function(){
-  zoom = map.getZoom();
   console.log(zoom);
   switch (true) {
     case (zoom < 5):
+      map.removeLayer(italyLayer)
       map.removeLayer(continentsLayer)
       map.removeLayer(thunderF)
       map.addLayer(worldLayer)
     break;
-    case (zoom >=5 && zoom <=8):
+    case (zoom >=5 && zoom <=7):
       map.removeLayer(worldLayer)
+      map.removeLayer(italyLayer)
       map.removeLayer(thunderF)
       map.addLayer(continentsLayer)
     break;
-    case (zoom > 8):
+    case (zoom > 7):
       map.removeLayer(worldLayer)
       map.removeLayer(continentsLayer)
       map.addLayer(thunderF)
+      map.addLayer(italyLayer)
   }
 })
 
@@ -68,4 +82,5 @@ function closePanel(){
   $("#mainPanel").removeClass('mainPanelOpened').addClass('mainPanelClosed');
   worldLayer.setStyle(worldStyle);
   continentsLayer.setStyle(contStyle);
+  italyLayer.setStyle(italyStyle);
 }
