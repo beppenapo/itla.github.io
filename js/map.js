@@ -39,14 +39,23 @@ map.on('click',closePanel)
 
 map.on('zoomend',function(){
   zoom = map.getZoom();
-  if (zoom >= 5 && zoom <= 10) {
-    map.removeLayer(worldLayer)
-    map.addLayer(continentsLayer)
-  }else {
-    map.removeLayer(continentsLayer)
-    map.addLayer(worldLayer)
+  console.log(zoom);
+  switch (true) {
+    case (zoom < 5):
+      map.removeLayer(continentsLayer)
+      map.removeLayer(thunderF)
+      map.addLayer(worldLayer)
+    break;
+    case (zoom >=5 && zoom <=8):
+      map.removeLayer(worldLayer)
+      map.removeLayer(thunderF)
+      map.addLayer(continentsLayer)
+    break;
+    case (zoom > 8):
+      map.removeLayer(worldLayer)
+      map.removeLayer(continentsLayer)
+      map.addLayer(thunderF)
   }
-  console.log(map.getZoom());
 })
 
 $("#closeMainPanel").on('click',closePanel);
