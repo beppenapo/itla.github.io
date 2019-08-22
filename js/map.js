@@ -1,16 +1,23 @@
 //map.fitBounds(e.layer.getBounds());
 
 let map = L.map('map').setView([0,0],2);
+
 let world = './inc/continents.json';
 let worldStyle = { stroke: false, fill: true, fillColor: '#fff', fillOpacity: 1}
 let highlight = { stroke: false, fill: true, fillColor: 'yellow', fillOpacity: 1}
+
 let continents = './inc/world.geo.json';
 let contStyle = { stroke: true, color:'rgba(0,0,0,.8)', weight:1, fill: true, fillColor: '#fff', fillOpacity: 1}
 let contHighlight = { stroke: true, color:'rgba(210,143,12,1)', weight:1, fill: true, fillColor: 'yellow', fillOpacity: 1}
+
 let italy = './inc/italy.json';
 let italyStyle = { stroke: true, color:'rgba(0,0,0,.8)', weight:1, fill: true, fillColor: '#fff', fillOpacity: .3}
 let italyHighlight = { stroke: true, color:'rgba(210,143,12,1)', weight:1, fill: true, fillColor: 'yellow', fillOpacity: .3}
-let selected, worldLayer, continentsLayer;
+
+let trentino = "./inc/trentino_terracement.geojson";
+let trentinoStyle = {weight:1,fillOpacity:.3}
+
+let selected, worldLayer, continentsLayer, italyLayer, trentinoLyr;
 let thunderF = L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=f1151206891e4ca7b1f6eda1e0852b2e');
 let zoom = 0;
 
@@ -50,6 +57,11 @@ $.getJSON(italy,function(data){
     });
 })
 
+$.getJSON(trentino,function(data){
+  trentinoLyr = L.geoJson(data,{style: trentinoStyle});
+});
+
+
 var resetMap = L.Control.extend({
   options: { position: 'topleft'},
   onAdd: function (map) {
@@ -67,26 +79,39 @@ map.addControl(new resetMap());
 L.control.scale({imperial:false}).addTo(map);
 
 map.on('click',closePanel)
+map.on('zoomstart',function(){$("#spinner").show()})
 map.on('zoomend',function(){
+  $("#spinner").hide()
   zoom = map.getZoom();
   switch (true) {
     case (zoom < 5):
       map.removeLayer(italyLayer)
       map.removeLayer(continentsLayer)
       map.removeLayer(thunderF)
+      map.removeLayer(trentinoLyr)
       map.addLayer(worldLayer)
     break;
     case (zoom >=5 && zoom <=7):
       map.removeLayer(worldLayer)
       map.removeLayer(italyLayer)
       map.removeLayer(thunderF)
+      map.removeLayer(trentinoLyr)
       map.addLayer(continentsLayer)
     break;
-    case (zoom > 7):
+    case (zoom >= 8 && zoom <=10):
       map.removeLayer(worldLayer)
       map.removeLayer(continentsLayer)
+      map.removeLayer(trentinoLyr)
       map.addLayer(thunderF)
       map.addLayer(italyLayer)
+    break;
+    case (zoom > 10):
+      map.removeLayer(worldLayer)
+      map.removeLayer(continentsLayer)
+      map.removeLayer(italyLayer)
+      map.addLayer(thunderF)
+      map.addLayer(trentinoLyr)
+    break;
   }
 })
 
