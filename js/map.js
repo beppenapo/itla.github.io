@@ -165,6 +165,7 @@ $("#actorList>a, #eventList>a").on('click', function(){
   console.log(zoom);
   setView([lat,lon],zoom)
 })
+$("#eventList>a").on('click', sloveniaPanel);
 
 function removeLayer(list){ $.each(list,function(i,layer){ map.removeLayer(layer) }) }
 function addLayer(list){ $.each(list,function(i,layer){ map.addLayer(layer) }) }
