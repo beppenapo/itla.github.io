@@ -65,6 +65,7 @@ let actorsRegion = L.layerGroup([osservatorioLayer, adottaLayer, albertoLayer]);
 let actorsNation = L.layerGroup([itlaItaLayer]);
 let actorsContinent = L.layerGroup([itlaEuLayer]).addTo(map);
 let eventGroup = L.layerGroup([sloveniaEvent]).addTo(map);
+
 $.getJSON(world,function(data){
   worldLayer = L.geoJson(data, { clickable: true, style: worldStyle})
     .on('click', function (e) {
@@ -183,10 +184,7 @@ $("#eventList>a").on('click', sloveniaPanel);
 
 function removeLayer(list){ $.each(list,function(i,layer){ map.removeLayer(layer) }) }
 function addLayer(list){ $.each(list,function(i,layer){ map.addLayer(layer) }) }
-
-function setView(ll,zoom){
-  map.setView(ll,zoom);
-}
+function setView(ll,zoom){ map.setView(ll,zoom); }
 
 function onEachFeatureIso(feature, layer) {
   // layer.on({
