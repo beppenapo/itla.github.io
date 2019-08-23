@@ -196,6 +196,7 @@ function closePanel(){
 }
 
 function sloveniaPanel(){
+  map.setView(sloveniaPoint,18)
   div = "<div class='lozad mb-3' data-background-image='./img/sloveniaEventBanner.jpg'></div>";
   div += "<h5 py-2'>EUROPEAN TERRACED LANDSCAPES DAY <br><small>August 23rd–24th, 2019, Vrtovin, Vipava Valley, Slovenia</small></h5>";
   div += "<p class='font-weight-bold'>SUPPORTED BY:</p>";
