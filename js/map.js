@@ -41,9 +41,22 @@ let albertoPoint = [46.1532659,11.8047659];
 let albertoIco = L.icon({iconUrl: './img/marker_ac.png', iconSize: [50, 50], iconAnchor: [0, 0] });
 let albertoLayer = L.marker(albertoPoint,{icon:albertoIco});
 
+let eventIco = L.AwesomeMarkers.icon({
+  prefix: 'fa',
+  extraClasses: 'far',
+  icon: 'calendar-alt',
+  markerColor: 'red'
+ });
+let sloveniaPoint = [45.8944465,13.8158263];
+let sloveniaEvent = L.marker(sloveniaPoint, {icon: eventIco});
+sloveniaEvent.properties = {};
+sloveniaEvent.properties.div = 'sloveniaEvent';
+console.log(sloveniaEvent);
+
 let actorsRegion = L.layerGroup([osservatorioLayer, adottaLayer, albertoLayer]);
 let actorsNation = L.layerGroup([itlaItaLayer]);
 let actorsContinent = L.layerGroup([itlaEuLayer]).addTo(map);
+let eventGroup = L.layerGroup([sloveniaEvent]).addTo(map);
 
 $.getJSON(world,function(data){
   worldLayer = L.geoJson(data, { clickable: true, style: worldStyle})
@@ -146,7 +159,7 @@ $("#landList>a").on('click',function() {
   iso = $(this).data('iso');
   map.fitBounds(featureByIso[iso].getBounds() );
 });
-$("#actorList>a").on('click', function(){
+$("#actorList>a, #eventList>a").on('click', function(){
   lat = $(this).data('lat');
   lon = $(this).data('lon');
   zoom = $(this).data('zoom');
