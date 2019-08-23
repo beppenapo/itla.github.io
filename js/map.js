@@ -21,6 +21,30 @@ let selected, worldLayer, continentsLayer, italyLayer, trentinoLyr;
 let thunderF = L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=f1151206891e4ca7b1f6eda1e0852b2e');
 let zoom = 0;
 
+let itlaEuPoint = [55.70,28.40];
+let itlaEuIco = L.icon({iconUrl: './img/marker_itlaEu.png', iconSize: [50, 50], iconAnchor: [0, 0] });
+let itlaEuLayer = L.marker(itlaEuPoint,{icon:itlaEuIco});
+
+let itlaItaPoint = [44.077765,8.1036493];
+let itlaItaIco = L.icon({iconUrl: './img/marker_itlaIta.png', iconSize: [50, 50], iconAnchor: [0, 100] });
+let itlaItaLayer = L.marker(itlaItaPoint,{icon:itlaItaIco});
+
+let osservatorioPoint = [46.073053,11.122166];
+let osservatorioIco = L.icon({iconUrl: './img/marker_osservatorio.png', iconSize: [50, 50], iconAnchor: [0, 0] });
+let osservatorioLayer = L.marker(osservatorioPoint,{icon:osservatorioIco});
+
+let adottaPoint = [45.859896, 11.658192];
+let adottaIco = L.icon({iconUrl: './img/marker_adotta.png', iconSize: [50, 50], iconAnchor: [0, 0] });
+let adottaLayer = L.marker(adottaPoint,{icon:adottaIco});
+
+let albertoPoint = [46.1532659,11.8047659];
+let albertoIco = L.icon({iconUrl: './img/marker_ac.png', iconSize: [50, 50], iconAnchor: [0, 0] });
+let albertoLayer = L.marker(albertoPoint,{icon:albertoIco});
+
+let actorsRegion = L.layerGroup([osservatorioLayer, adottaLayer, albertoLayer]);
+let actorsNation = L.layerGroup([itlaItaLayer]);
+let actorsContinent = L.layerGroup([itlaEuLayer]).addTo(map);
+
 $.getJSON(world,function(data){
   worldLayer = L.geoJson(data, { clickable: true, style: worldStyle})
     .on('click', function (e) {
@@ -35,7 +59,10 @@ $.getJSON(world,function(data){
   map.fitBounds(worldLayer.getBounds());
 })
 $.getJSON(continents,function(data){
-  continentsLayer = L.geoJson(data, { clickable: true, style: contStyle})
+  continentsLayer = L.geoJson(data, {
+    clickable: true, style: contStyle,
+    onEachFeature: onEachFeatureIso
+  })
     .on('click', function (e) {
       if (selected) { e.target.resetStyle(selected) }
       selected = e.layer
@@ -45,6 +72,7 @@ $.getJSON(continents,function(data){
       L.DomEvent.stopPropagation(e);
     });
 })
+
 $.getJSON(italy,function(data){
   italyLayer = L.geoJson(data, { clickable: true, style: italyStyle})
     .on('click', function (e) {
@@ -85,38 +113,62 @@ map.on('zoomend',function(){
   zoom = map.getZoom();
   switch (true) {
     case (zoom < 5):
-      map.removeLayer(italyLayer)
-      map.removeLayer(continentsLayer)
-      map.removeLayer(thunderF)
-      map.removeLayer(trentinoLyr)
-      map.addLayer(worldLayer)
+      remove = [italyLayer,continentsLayer,thunderF,trentinoLyr,actorsRegion,actorsNation]
+      add = [worldLayer,actorsContinent]
+      removeLayer(remove)
+      addLayer(add)
     break;
     case (zoom >=5 && zoom <=7):
-      map.removeLayer(worldLayer)
-      map.removeLayer(italyLayer)
-      map.removeLayer(thunderF)
-      map.removeLayer(trentinoLyr)
-      map.addLayer(continentsLayer)
+      remove = [worldLayer, italyLayer, thunderF,trentinoLyr,actorsContinent, actorsRegion]
+      add = [continentsLayer,actorsNation]
+      removeLayer(remove)
+      addLayer(add)
     break;
     case (zoom >= 8 && zoom <=10):
-      map.removeLayer(worldLayer)
-      map.removeLayer(continentsLayer)
-      map.removeLayer(trentinoLyr)
-      map.addLayer(thunderF)
-      map.addLayer(italyLayer)
+      remove = [worldLayer, continentsLayer,actorsNation, actorsContinent, trentinoLyr]
+      add = [thunderF,italyLayer,actorsRegion]
+      removeLayer(remove)
+      addLayer(add)
     break;
     case (zoom > 10):
-      map.removeLayer(worldLayer)
-      map.removeLayer(continentsLayer)
-      map.removeLayer(italyLayer)
-      map.addLayer(thunderF)
-      map.addLayer(trentinoLyr)
+      remove = [worldLayer,continentsLayer,italyLayer,actorsContinent, actorsNation]
+      add = [thunderF,trentinoLyr,actorsRegion]
+      removeLayer(remove)
+      addLayer(add)
     break;
   }
 })
 
 $("#closeMainPanel").on('click',closePanel);
 
+featureByIso = {}
+$("#landList>a").on('click',function() {
+  iso = $(this).data('iso');
+  map.fitBounds(featureByIso[iso].getBounds() );
+});
+$("#actorList>a").on('click', function(){
+  lat = $(this).data('lat');
+  lon = $(this).data('lon');
+  zoom = $(this).data('zoom');
+  console.log(zoom);
+  setView([lat,lon],zoom)
+})
+
+function removeLayer(list){ $.each(list,function(i,layer){ map.removeLayer(layer) }) }
+function addLayer(list){ $.each(list,function(i,layer){ map.addLayer(layer) }) }
+
+function setView(ll,zoom){
+  map.setView(ll,zoom);
+}
+
+function onEachFeatureIso(feature, layer) {
+  // layer.on({
+  //   mouseover: highlightFeature,
+  //   mouseout: resetHighlight,
+  //   click: zoomToFeature
+  // });
+  featureByIso[feature.properties.iso_a2] = layer;
+}
 function openPanel(layer){
   $("#mainPanel").removeClass('mainPanelClosed').addClass('mainPanelOpened');
   $("#continentName").text(layer.sourceTarget.feature.properties.name);
