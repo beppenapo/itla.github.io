@@ -81,15 +81,20 @@ $.getJSON(world,function(data){
 })
 $.getJSON(continents,function(data){
   continentsLayer = L.geoJson(data, {
-    clickable: true, style: contStyle,
+    clickable: true,
+    style: contStyle,
     onEachFeature: onEachFeatureIso
   })
     .on('click', function (e) {
+      if (e.sourceTarget.feature.properties.iso_a2 == 'IT') {
+        italiaPanel()
+      }else {
+        closePanel()
+      }
       if (selected) { e.target.resetStyle(selected) }
       selected = e.layer
       selected.bringToFront()
       selected.setStyle(contHighlight)
-      openPanel(e)
       L.DomEvent.stopPropagation(e);
     });
 })
@@ -97,11 +102,15 @@ $.getJSON(continents,function(data){
 $.getJSON(italy,function(data){
   italyLayer = L.geoJson(data, { clickable: true, style: italyStyle})
     .on('click', function (e) {
+      if (e.sourceTarget.feature.properties.id == 4) {
+        trentinoPanel()
+      }else {
+        closePanel()
+      }
       if (selected) { e.target.resetStyle(selected) }
       selected = e.layer
       selected.bringToFront()
       selected.setStyle(italyHighlight)
-      openPanel(e)
       L.DomEvent.stopPropagation(e);
     });
 })
@@ -171,7 +180,6 @@ $("#actorList>a, #eventList>a").on('click', function(){
   lat = $(this).data('lat');
   lon = $(this).data('lon');
   zoom = $(this).data('zoom');
-  console.log(zoom);
   setView([lat,lon],zoom)
 })
 
@@ -203,6 +211,26 @@ function closePanel(){
   worldLayer.setStyle(worldStyle);
   continentsLayer.setStyle(contStyle);
   italyLayer.setStyle(italyStyle);
+}
+
+function italiaPanel(){
+  div = "<h5 class='py-2'>Italy</h5>";
+  div += "<img src='./img/italyDistributionMap.jpg' alt='Tab1' class='img-fluid my-3'>"
+  div += "<p class='mb-2'>Observing this map distribution the largest terraced region, in extent, is Sicily, with over 63,000 ha surveyed, followed by Liguria with 42,000 and, more detached, Tuscany, Campania, and Lazio. This classification confirms the predominantly Apennine and, specifically, Tyrrhenian nature of the Italian terraces, already suggested by Bonardi 2016 and now more strikingly highlighted by the emergence of vast terraced areas, even in previously underestimated regions such as Lazio. This also helps to explain the prevailing orientation of terracing toward the southwest (average of the azimuthal directions of 188°), probably determined by climatic factors related to atmospheric conditions and less cold winter stress indexes.</p>"
+  div += "<p class='mb-2'>However, considering the percentage of terraces on the regional surface, it is Liguria that boasts the highest ratio (almost 8%), followed at a long distance by Sicily (2.46%) and Tuscany (about 1%).1 Though characterized by important sub-regional terraced systems in lower Valle d’Aosta, Valtellina (Lombardy), Lagarina Valley, Cembra, and Terragnolo (Trentino), or in the Venetian Prealps (Veneto), Alpine terracing is not as extensive as Apennine terracing. (Lombardy, the first Alpine region in the ranking, is only in sixth place). Here, terraces reach the highest altitudes of the peninsula, with the municipality of Argentera (province of Cuneo) holding the record for the average altitude (over 1800 m above sea level). More than half of the Italian terraced areas, however, are located at lower altitudes, within 300 m asl, highlighting the importance and spread of the phenomenon—especially in coastal areas, in the insular regions, and in the foothill areas near valleys or plains also characterized by important urban phenomena.</p>"
+  $('.contentPanel').html(div)
+  openPanel()
+}
+
+function trentinoPanel(){
+  div = "<h5 class='py-2'>Trentino - Alto Adige</h5>";
+  div += "<p class='mb-2'>The Table below briefly summarizes some of the results for six valley communities, which are published in the Atlas. The most prominent result that arises from this research is the overall extent of terraced landscapes - almost 7.000 ha – which represents a production and cultural resource of extreme importance for the surveyed territories.</p>";
+  div += "<img src='./img/trentinoTab1.jpg' alt='Tab1' class='img-fluid my-3'>"
+  div += "<p class='mb-2'>Moreover, a striking result emerged on the use or abandonment of rural terraced land. While abandoned lands constitute the 46% of all terraced areas, in some valley communities these are up to 60%. In some extreme cases, for individual municipalities, more than 80% of the terraced lands that were once rural are now abandoned and covered with forest.</p>"
+  div += "<p class='mb-2'>Of extreme interest are also the results on the linear extent of containment structures, mostly made of dry-stone walls, which require continual maintenance. These structures expand linearly to almost 3.000 km overall, giving a first immediate indication on the extent of the investment in terms of financial and working resources that are needed to preserve the function and vitality of these particular rural landscapes.</p>"
+  div += "<p class='mb-2'>The main aim of the Atlas is to address the issue of agricultural areas abandonment, by quantifying and localizing the phenomenon. The analyses and outcomes reported in the Atlas provide helpful insights on the described high abandoned scenario, and could set the basis for an action of recovery concerning rural landscapes, which characterize the alpine and pre-alpine landscape since centuries.</p>"
+  $('.contentPanel').html(div)
+  openPanel()
 }
 
 function sloveniaPanel(){
