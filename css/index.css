@@ -4,15 +4,17 @@ body {padding: 0;margin: 0;font-family: 'Raleway', sans-serif;overflow:hidden;}
 .animation{-webkit-transition: all .5s ease; -moz-transition: all .5s ease; -ms-transition: all .5s ease; -o-transition: all .5s ease; transition: all .5s ease;}
 .pointer{cursor: pointer;}
 .mainPanelOpened{right:0;}
-.mainPanelClosed{right:-300px;}
+.mainPanelClosed{right:-500px;}
 
-#header{z-index:2; position: fixed; top: 0; left: 0; width: 100vw; background: #9a9a9a;font-family: 'Oswald', sans-serif;}
+#header{z-index:3; position: fixed; top: 0; left: 0; width: 100vw; background: #9a9a9a;font-family: 'Oswald', sans-serif;}
 #header button{border-color: transparent !important; background:#9a9a9a;font-size:22px;}
 #header button::after{display: none;}
 #header button:focus{box-shadow: none}
 #header .dropdown-menu.show{top:-2px !important;}
 #map{position:absolute;top: 0;left:0;bottom:0;width: 100%;z-index:1;}
-#mainPanel{position:absolute; top:50px; width:300px; min-height:50vh; height:auto; max-height: 80vh; background: #fff; overflow:auto; z-index: 2}
+#mainPanel{position:absolute; top:50px; width:500px; min-height:50vh; height:auto; max-height: 80vh; background: #fff; overflow:auto; z-index: 2}
+#mainPanel .contentPanel {font-size:80%;}
+#mainPanel .contentPanel p {margin:0; padding:0;}
 #spinner{position:absolute;top:0;left:0;width:100vw;height:100vh; z-index: 100;display: none;}
 #spinner>div{position:absolute;top:45%;left:45%;}
 .leaflet-top{top:50px;}

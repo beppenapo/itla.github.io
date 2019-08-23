@@ -1,5 +1,5 @@
 //map.fitBounds(e.layer.getBounds());
-
+let panel = $(".contentPanel");
 let map = L.map('map').setView([0,0],2);
 
 let world = './inc/continents.json';
@@ -51,13 +51,12 @@ let sloveniaPoint = [45.8944465,13.8158263];
 let sloveniaEvent = L.marker(sloveniaPoint, {icon: eventIco});
 sloveniaEvent.properties = {};
 sloveniaEvent.properties.div = 'sloveniaEvent';
-console.log(sloveniaEvent);
+sloveniaEvent.on('click', sloveniaPanel)
 
 let actorsRegion = L.layerGroup([osservatorioLayer, adottaLayer, albertoLayer]);
 let actorsNation = L.layerGroup([itlaItaLayer]);
 let actorsContinent = L.layerGroup([itlaEuLayer]).addTo(map);
 let eventGroup = L.layerGroup([sloveniaEvent]).addTo(map);
-
 $.getJSON(world,function(data){
   worldLayer = L.geoJson(data, { clickable: true, style: worldStyle})
     .on('click', function (e) {
@@ -184,11 +183,27 @@ function onEachFeatureIso(feature, layer) {
 }
 function openPanel(layer){
   $("#mainPanel").removeClass('mainPanelClosed').addClass('mainPanelOpened');
-  $("#continentName").text(layer.sourceTarget.feature.properties.name);
+  // $("#title").text(layer.sourceTarget.feature.properties.name);
 }
 function closePanel(){
   $("#mainPanel").removeClass('mainPanelOpened').addClass('mainPanelClosed');
+  panel.html('');
   worldLayer.setStyle(worldStyle);
   continentsLayer.setStyle(contStyle);
   italyLayer.setStyle(italyStyle);
+}
+
+function sloveniaPanel(){
+  div = "<h5 py-2'>EUROPEAN TERRACED LANDSCAPES DAY <br><small>August 23rd–24th, 2019, Vrtovin, Vipava Valley, Slovenia</small></h5>";
+  div += "<p class='font-weight-bold'>SUPPORTED BY:</p>";
+  div += "<p class='mb-2'>The Municipality of Ajdovščina</p>";
+  div += "<p class='font-weight-bold'>HELD BY:</p>";
+  div += "<ul>"+
+        "<li>The Aqua Turris Association</li>"+
+        "<li>ITLA Slovenia</li>"+
+        "<li>Faculty of Architecture, University of Ljubljana</li>"+
+        "</ul>";
+  div += "<p class='mt-2'>On 23 and 24 of July we will celebrate the European Terraced Landscapes Day in Vrtovin.<br>On August 25 the available members of the ITLA Committee will meet in Goriska Brda to deliberate urgent issues of ITLA including the selection of the next venue for the ITLA World Encounter (also on the themes and process) and future publications on terraced landscapes (ITLA Journal, Vegueta, Pirineos, etc.). We will send preparatory information to all members mid August.</p>"
+  $('.contentPanel').html(div)
+  openPanel()
 }
