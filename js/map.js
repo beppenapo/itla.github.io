@@ -1,3 +1,5 @@
+const observer = lozad();
+observer.observe();
 //map.fitBounds(e.layer.getBounds());
 let panel = $(".contentPanel");
 let map = L.map('map').setView([0,0],2);
@@ -184,7 +186,6 @@ function onEachFeatureIso(feature, layer) {
 }
 function openPanel(layer){
   $("#mainPanel").removeClass('mainPanelClosed').addClass('mainPanelOpened');
-  // $("#title").text(layer.sourceTarget.feature.properties.name);
 }
 function closePanel(){
   $("#mainPanel").removeClass('mainPanelOpened').addClass('mainPanelClosed');
@@ -195,7 +196,8 @@ function closePanel(){
 }
 
 function sloveniaPanel(){
-  div = "<h5 py-2'>EUROPEAN TERRACED LANDSCAPES DAY <br><small>August 23rd–24th, 2019, Vrtovin, Vipava Valley, Slovenia</small></h5>";
+  div = "<div class='lozad mb-3' data-background-image='./img/sloveniaEventBanner.jpg'></div>";
+  div += "<h5 py-2'>EUROPEAN TERRACED LANDSCAPES DAY <br><small>August 23rd–24th, 2019, Vrtovin, Vipava Valley, Slovenia</small></h5>";
   div += "<p class='font-weight-bold'>SUPPORTED BY:</p>";
   div += "<p class='mb-2'>The Municipality of Ajdovščina</p>";
   div += "<p class='font-weight-bold'>HELD BY:</p>";
@@ -206,5 +208,6 @@ function sloveniaPanel(){
         "</ul>";
   div += "<p class='mt-2'>On 23 and 24 of July we will celebrate the European Terraced Landscapes Day in Vrtovin.<br>On August 25 the available members of the ITLA Committee will meet in Goriska Brda to deliberate urgent issues of ITLA including the selection of the next venue for the ITLA World Encounter (also on the themes and process) and future publications on terraced landscapes (ITLA Journal, Vegueta, Pirineos, etc.). We will send preparatory information to all members mid August.</p>"
   $('.contentPanel').html(div)
+  observer.observe();
   openPanel()
 }
